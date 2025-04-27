@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPU - ALU - Cache - RAM Simülasyonu</title>
+  <style>
+    body {
+    background: #0a0a0a;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Başlık */
+h1 {
+    margin-bottom: 10px;
+    font-size: 2rem;
+    color: #00d9ff;
+    text-align: center;
+}
+/*Form*/
+.form-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            width: 300px;
+            text-align: center;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #ffffff;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .form-container button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background-color: #00bcd4;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container button:hover {
+            background-color: #0097a7;
+        }
+
+/* Seçim Kutuları */
+.selector {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.selector select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #ffffff;
+    color: #000;
+    cursor: pointer;
+}
+
+/* Ana İşlem Kutuları */
+.container {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Her Birim */
+.unit {
+    border: 3px solid #00d9ff;
+    padding: 20px 30px;
+    border-radius: 15px;
+    text-align: center;
+    background: #111;
+    box-shadow: 0 0 15px #00d9ff;
+    min-width: 120px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Bağlantı Çizgileri */
+.line {
+    width: 60px;
+    height: 4px;
+    background: #00d9ff;
+}
+
+/* Hareket Eden Veri */
+.data {
+    width: 14px;
+    height: 14px;
+    background: #ffd700;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: moveData 14s linear infinite;
+    box-shadow: 0 0 8px #ffd700;
+}
+
+/* Veri Hareket Animasyonu */
+@keyframes moveData {
+    0% { left: 0; top: 0; }
+    20% { left: 60px; top: 0; }
+    25% { left: 60px; top: 40px; }
+    45% { left: 180px; top: 40px; }
+    50% { left: 180px; top: 0; }
+    70% { left: 300px; top: 0; }
+    75% { left: 300px; top: 40px; }
+    100% { left: 420px; top: 40px; }
+}
+
+/* Durum Metni */
+.status-text {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #00ff88;
+    height: 30px;
+    text-align: center;
+}
+
+/* ALU İşlemi Sonucu */
+.alu-ops {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #ffcc00;
+}
+
+/* Cache ve RAM Blokları */
+.cache-blocks, .ram-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+/* Cache/RAM Tek Blok */
+.block {
+    width: 50px;
+    height: 50px;
+    background: #00d9ff;
+    opacity: 0.9;
+    border: 2px solid #00d9ff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+/* Öne Çıkan Blok */
+.highlight {
+    background: #ff0;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px #ff0;
+}
+
+/* Parlayan Blok */
+.glow {
+    box-shadow: 0 0 30px #00ffea, 0 0 60px #00ffea;
+}
+
+/* Dolu Blok */
+.block.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <h1>CPU - ALU - Cache - RAM Simülasyonu</h1>
+    <!-- İki Sayı Girişi -->
+     <div class="form-container">
+    <div class="selector">
+        <label for="input1">1. Sayı:</label>
+        <input type="number" id="input1">
+      </div>
+    
+      <div class="selector">
+        <label for="input2">2. Sayı:</label>
+        <input type="number" id="input2">
+      </div>
+
+  <!-- ALU İşlemi Seçimi -->
+  <div class="selector">
+    <label for="operation">ALU İşlemi Seçin:</label>
+    <select id="operation">
+      <option value="ADD">Toplama</option>
+      <option value="SUB">Çıkarma</option>
+      <option value="MUL">Çarpma</option>
+      <option value="DIV">Bölme</option>
+      <option value="AND">AND</option>
+      <option value="OR">OR</option>
+      <option value="NOT">NOT</option>
+    </select>
+  </div>
+  <!--Ram boyutlandırma-->
+  <div class="selector">
+    <label for="ram-size">RAM Boyutu Seçin:</label>
+    <select id="ram-size">
+      <option value="4" selected>4 Blok</option>
+      <option value="8">8 Blok</option>
+      <option value="12">12 Blok</option>
+      <option value="16">16 Blok</option>
+    </select>
+  </div>
+  
+
+  <!-- FIFO / LRU Seçimi -->
+  <div class="selector">
+    <label for="cache-policy">Cache Politikası Seçin:</label>
+    <select id="cache-policy">
+      <option value="FIFO">FIFO</option>
+      <option value="LRU">LRU</option>
+    </select>
+  </div>
+
+  <!-- Başlat Butonu -->
+  <div class="selector">
+    <button id="start-btn">İşlemi Başlat</button>
+  </div>
+</div>
+
+  <!-- Ana İşlem Aşamaları -->
+  <div class="container">
+    <div class="unit" id="cpu">CPU</div>
+    <div class="line">
+      <div class="data" id="data"></div>
+    </div>
+    <div class="unit" id="alu">ALU</div>
+    <div class="line"></div>
+    <div class="unit" id="cache">Cache</div>
+    <div class="line"></div>
+    <div class="unit" id="ram">RAM</div>
+  </div>
+
+  <!-- Durum Bilgileri -->
+  <div class="status-text" id="status">Başlıyor...</div>
+  <div class="alu-ops" id="alu-ops">ALU İşlemi Bekleniyor...</div>
+
+  <!-- Cache Blokları -->
+  <div class="section">
+    <h2>Cache Blokları</h2>
+    <div class="cache-blocks" id="cache-blocks">
+      <div class="block">A</div>
+      <div class="block">B</div>
+      <div class="block">C</div>
+      <div class="block">D</div>
+    </div>
+  </div>
+
+  <!-- RAM Blokları -->
+  <div class="section">
+    <h2>RAM Blokları</h2>
+    <div class="ram-blocks" id="ram-blocks">
+      <div class="block">1</div>
+      <div class="block">2</div>
+      <div class="block">3</div>
+      <div class="block">4</div>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
